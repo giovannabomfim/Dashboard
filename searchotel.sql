@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: 15-Ago-2018 às 19:47
+-- Generation Time: 15-Ago-2018 às 23:47
 -- Versão do servidor: 5.7.21
 -- PHP Version: 7.0.29
 
@@ -21,6 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `searchotel`
 --
+CREATE DATABASE IF NOT EXISTS `searchotel` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+USE `searchotel`;
 
 -- --------------------------------------------------------
 
