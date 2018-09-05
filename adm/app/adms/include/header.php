@@ -9,9 +9,9 @@ $nome = explode(" ", $row_user_hd['nome']);
 $prim_nome = $nome[0];
 ?>
 
-<nav class="navbar navbar-expand navbar-dark" style="background-color: #b30000">
-      <a class="sidebar-toggle text-light mr-3"><span class="navbar-toggler-icon"></span></a>
-      <a class="navbar-brand">SearcHotel</a>
+<nav class="navbar navbar-expand navbar-dark" style="background-color: #114f77">
+      <a class="sidebar-toggle mr-3"><img src="<?php echo pg; ?>/assets/imagens/menu.png"></a>
+       <a class="navbar-brand">HOTEL SEARCH</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>

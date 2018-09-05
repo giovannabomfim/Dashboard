@@ -11,141 +11,80 @@ include_once 'app/adms/include/head.php';
     <div class="d-flex">
         <?php
         include_once 'app/adms/include/menu.php';
+
+        $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+        $result_niv_aces = "SELECT * FROM adms_niveis_acessos WHERE ordem >= '" . $_SESSION['ordem'] . "' AND id=$id ORDER BY ordem ASC LIMIT 1";
+        $resultado_niv_aces = mysqli_query($conn, $result_niv_aces);
+        $row_niv_aces = mysqli_fetch_assoc($resultado_niv_aces);
         ?>
         <div class="content p-1">
             <div class="list-group-item">
                 <div class="d-flex">
                     <div class="mr-auto p-2">
-                        <h2 class="display-4 titulo">Visualizar Nível de Acesso</h2>
+                        <h2 class="display-4 titulo">Detalhes Nível de Acesso</h2>
                     </div>
                     <div class="p-2">
+                        <span class = "d-none d-md-block">
                         <?php
-                        $btn_cad = carregar_btn('cadastrar/cad_niv_aces', $conn);
-                        if ($btn_cad) {
-                            echo "<a href='" . pg . "/cadastrar/cad_niv_aces' class='btn btn-outline-success btn-sm'>Cadastrar</a>";
+                        $btn_list = carregar_btn('listar/list_niv_aces', $conn);
+                        if ($btn_list) {
+                            echo "<a href='" . pg . "/listar/list_niv_aces' class='btn btn-outline-info btn-sm'>Listar</a> ";
+                        }
+                        $btn_edit = carregar_btn('editar/edit_niv_aces', $conn);
+                        if ($btn_edit) {
+                            echo "<a href='" . pg . "/editar/edit_niv_aces?id=" . $row_niv_aces['id'] . "' class='btn btn-outline-warning btn-sm'>Editar </a> ";
+                        }
+                        $btn_apagar = carregar_btn('processa/apagar_niv_aces', $conn);
+                        if ($btn_apagar) {
+                            echo "<a href='" . pg . "/processa/apagar_niv_aces' class='btn btn-outline-danger btn-sm' data-toggle='modal' data-target='#apagarRegistro'>Apagar</a> ";
                         }
                         ?>
-                    </div>
-                </div>
-                <div class="alert alert-success" role="alert">
-                    Usuário apagado com sucesso!
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <?php
-                //Receber o número da página
-                $pagina_atual = filter_input(INPUT_GET, 'pagina', FILTER_SANITIZE_NUMBER_INT);
-                $pagina = (!empty($pagina_atual)) ? $pagina_atual : 1;
-
-                //Setar a quantidade de itens por pagina
-                $qnt_result_pg = 40;
-
-                //Calcular o inicio visualização
-                $inicio = ($qnt_result_pg * $pagina) - $qnt_result_pg;
-                $resul_niv_aces = "SELECT * FROM adms_niveis_acessos WHERE ordem >= '" . $_SESSION['ordem'] . "' ORDER BY ordem ASC LIMIT $inicio, $qnt_result_pg";
-                $resultado_niv_aces = mysqli_query($conn, $resul_niv_aces);
-                if (($resultado_niv_aces) AND ( $resultado_niv_aces->num_rows != 0)) {
-                    ?>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nome</th>
-                                    <th class="d-none d-sm-table-cell">Ordem</th>
-                                    <th class="text-center">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        </span>
+                        <div class="dropdown d-block d-md-none">
+                            <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="acoesListar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Ações
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="acoesListar">
                                 <?php
-                                while ($row_niv_aces = mysqli_fetch_assoc($resultado_niv_aces)) {
-                                    ?>
-                                    <tr>
-                                        <th><?php echo $row_niv_aces['id']; ?></th>
-                                        <td><?php echo $row_niv_aces['nome']; ?></td>
-                                        <td class="d-none d-sm-table-cell"><?php echo $row_niv_aces['ordem']; ?></td>
-                                        <td class="text-center">
-                                            <span class="d-none d-md-block">
-                                            <?php
-                                            $btn_vis = carregar_btn('visualizar/vis_niv_aces', $conn);
-                                            if ($btn_vis) {
-                                                echo "<a href='" . pg . "/visualizar/vis_niv_aces?id=".$row_niv_aces['id']."' class='btn btn-outline-primary btn-sm'>Visualizar</a> ";
-                                            }
-                                            $btn_edit = carregar_btn('editar/edit_niv_aces', $conn);
-                                            if ($btn_edit) {
-                                                echo "<a href='" . pg . "/editar/edit_niv_aces?id=".$row_niv_aces['id']."' class='btn btn-outline-warning btn-sm'>Editar </a> ";
-                                            }
-                                            $btn_apagar = carregar_btn('processa/apagar_niv_aces', $conn);
-                                            if ($btn_apagar) {
-                                                echo "<a href='" . pg . "/processa/apagar_niv_aces' class='btn btn-outline-danger btn-sm' data-toggle='modal' data-target='#apagarRegistro'>Apagar</a> ";
-                                            }
-                                            ?>
-                                            </span>
-                                            <div class="dropdown d-block d-md-none">
-                                                <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="acoesListar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    Ações
-                                                </button>
-                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="acoesListar">
-                                                    <?php
-                                                    if ($btn_vis) {
-                                                        echo "<a class='dropdown-item' href='" . pg . "/visualizar/vis_niv_aces?id=".$row_niv_aces['id']."'>Visualizar</a>";
-                                                    }
-                                                    if ($btn_edit) {
-                                                        echo "<a class='dropdown-item' href='" . pg . "/editar/edit_niv_aces?id=".$row_niv_aces['id']."'>Editar</a>";
-                                                    }
-                                                    if ($btn_apagar) {
-                                                        echo "<a class='dropdown-item' href=''" . pg . "/processa/apagar_niv_aces' data-toggle='modal' data-target='#apagarRegistro'>Apagar</a>";
-                                                    }
-                                                    ?>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <?php
+                                if ($btn_list) {
+                                    echo "<a class='dropdown-item' href='" . pg . "/listar/list_niv_aces'>Listar</a>";
+                                }
+                                if ($btn_edit) {
+                                    echo "<a class='dropdown-item' href='" . pg . "/editar/edit_niv_aces?id=" . $row_niv_aces['id'] . "'>Editar</a>";
+                                }
+                                if ($btn_apagar) {
+                                    echo "<a class='dropdown-item' href=''" . pg . "/processa/apagar_niv_aces' data-toggle='modal' data-target='#apagarRegistro'>Apagar</a>";
                                 }
                                 ?>
-
-                            </tbody>
-                        </table>
-                        <?php
-                        $result_pg = "SELECT COUNT(id) AS num_result FROM adms_niveis_acessos WHERE ordem >= '" . $_SESSION['ordem'] . "'";
-                        $resultado_pg = mysqli_query($conn, $result_pg);
-                        $row_pg = mysqli_fetch_assoc($resultado_pg);
-                        //echo $row_pg['num_result'];
-                        //Quantidade de pagina 
-                        $quantidade_pg = ceil($row_pg['num_result'] / $qnt_result_pg);
-                        //Limitar os link antes depois
-                        $max_links = 2;
-                        echo "<nav aria-label='paginacao-blog'>";
-                        echo "<ul class='pagination pagination-sm justify-content-center'>";
-                        echo "<li class='page-item'>";
-                        echo "<a class='page-link' href='" . pg . "/listar/list_niv_aces?pagina=1' tabindex='-1'>Primeira</a>";
-                        echo "</li>";
-
-                        for ($pag_ant = $pagina - $max_links; $pag_ant <= $pagina - 1; $pag_ant++) {
-                            if ($pag_ant >= 1) {
-                                echo "<li class='page-item'><a class='page-link' href='" . pg . "/listar/list_niv_aces?pagina=$pag_ant'>$pag_ant</a></li>";
-                            }
-                        }
-
-                        echo "<li class='page-item active'>";
-                        echo "<a class='page-link' href='#'>$pagina</a>";
-                        echo "</li>";
-
-                        for ($pag_dep = $pagina + 1; $pag_dep <= $pagina + $max_links; $pag_dep++) {
-                            if ($pag_dep <= $quantidade_pg) {
-                                echo "<li class='page-item'><a class='page-link' href='" . pg . "/listar/list_niv_aces?pagina=$pag_dep'>$pag_dep</a></li>";
-                            }
-                        }
-
-                        echo "<li class='page-item'>";
-                        echo "<a class='page-link' href='" . pg . "/listar/list_niv_aces?pagina=$quantidade_pg'>Última</a>";
-                        echo "</li>";
-                        echo "</ul>";
-                        echo "</nav>";
-                        ?>                        
+                            </div>
+                        </div>
                     </div>
+                </div><hr>
+                <?php
+                if (($resultado_niv_aces) AND ( $resultado_niv_aces->num_rows != 0)) {
+                    
+                    ?>
+                    <dl class="row">
+                        <dt class="col-sm-3">ID</dt>
+                        <dd class="col-sm-9"><?php echo $row_niv_aces['id']; ?></dd>
+
+                        <dt class="col-sm-3">Nome</dt>
+                        <dd class="col-sm-9"><?php echo $row_niv_aces['nome']; ?></dd>
+
+                        <dt class="col-sm-3">Ordem</dt>
+                        <dd class="col-sm-9"><?php echo $row_niv_aces['ordem']; ?></dd>
+
+                        <dt class="col-sm-3 text-truncate">Data do Cadastro</dt>
+                        <dd class="col-sm-9"><?php echo date('d/m/Y H:i:s', strtotime($row_niv_aces['created'])); ?></dd>
+
+                        <dt class="col-sm-3 text-truncate">Data de Modificação</dt>
+                        <dd class="col-sm-9"><?php
+                            if (!empty($row_niv_aces['modified'])) {
+                                echo date('d/m/Y H:i:s', strtotime($row_niv_aces['modified']));
+                            }
+                            ?></dd>
+
+                    </dl>
                     <?php
                 } else {
                     ?>
@@ -155,7 +94,6 @@ include_once 'app/adms/include/head.php';
                     <?php
                 }
                 ?>
-
             </div>
         </div>
         <?php

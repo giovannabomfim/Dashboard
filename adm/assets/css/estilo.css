@@ -1,6 +1,10 @@
 body {
     background-color: #eaeef3;
 }
+.navbar-brand{
+    font-family: 'Cuprum', sans-serif;
+}
+
 .menu-header{
     color: #FFF !important;
 }
